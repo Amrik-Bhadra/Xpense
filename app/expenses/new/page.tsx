@@ -5,9 +5,12 @@ export default async function NewExpensePage() {
   const categories = await prisma.category.findMany({ orderBy: { name: 'asc' } })
 
   return (
-    <main className="max-w-md mx-auto p-8">
-      <h1 className="text-2xl font-bold mb-6">Add Expense</h1>
-      <ExpenseForm categories={categories} />
-    </main>
+    <div className="p-8 max-w-md mx-auto">
+      <p className="text-sm text-muted">New record</p>
+      <h1 className="text-2xl font-semibold tracking-tight mb-6">Add expense</h1>
+      <div className="rounded-2xl bg-surface border border-border p-6">
+        <ExpenseForm categories={categories} />
+      </div>
+    </div>
   )
 }

@@ -1,65 +1,83 @@
-import Image from "next/image";
+import Link from 'next/link'
+import { ArrowUpRight, Wallet } from 'lucide-react'
+import { prisma } from '@/lib/prisma'
+import { categoryColor } from '@/lib/category-colors'
 
-export default function Home() {
+export default async function DashboardPage() {
+  const totals = await prisma.expense.groupBy({
+    by: ['categoryId'],
+    _sum: { amount: true },
+    orderBy: { _sum: { amount: 'desc' } },
+  })
+
+  const categories = await prisma.category.findMany()
+  const categoryMap = Object.fromEntries(categories.map((c) => [c.id, c.name]))
+
+  const grandTotal = totals.reduce((sum, t) => sum + (t._sum.amount ?? 0), 0)
+  const maxAmount = Math.max(...totals.map((t) => t._sum.amount ?? 0), 1)
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="p-8 max-w-3xl mx-auto">
+      <header className="mb-8">
+        <p className="text-sm text-muted">Overview</p>
+        <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
+      </header>
+
+      <div className="rounded-2xl bg-surface border border-border p-6 mb-8">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm text-muted mb-1">Total spent</p>
+            <p className="font-tabular text-4xl font-semibold tracking-tight">
+              ₹{grandTotal.toFixed(2)}
+            </p>
+          </div>
+          <div className="w-11 h-11 rounded-xl bg-brand-soft flex items-center justify-center">
+            <Wallet size={20} className="text-brand" />
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </div>
+
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-sm font-medium text-muted">By category</h2>
+        <Link
+          href="/expenses"
+          className="text-sm text-brand font-medium flex items-center gap-1 hover:underline"
+        >
+          View all <ArrowUpRight size={14} />
+        </Link>
+      </div>
+
+      {totals.length === 0 ? (
+        <div className="rounded-2xl border border-dashed border-border p-10 text-center">
+          <p className="text-muted text-sm">No spending yet. Add your first expense to see it here.</p>
         </div>
-      </main>
+      ) : (
+        <div className="rounded-2xl bg-surface border border-border divide-y divide-border">
+          {totals.map((t) => {
+            const amount = t._sum.amount ?? 0
+            const color = categoryColor(categoryMap[t.categoryId] ?? '')
+            const pct = (amount / maxAmount) * 100
+
+            return (
+              <div key={t.categoryId} className="p-4 flex items-center gap-4">
+                <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: color.text }} />
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-sm font-medium">{categoryMap[t.categoryId]}</span>
+                    <span className="font-tabular text-sm font-semibold">₹{amount.toFixed(2)}</span>
+                  </div>
+                  <div className="h-1.5 rounded-full bg-surface-hover overflow-hidden">
+                    <div
+                      className="h-full rounded-full"
+                      style={{ width: `${pct}%`, backgroundColor: color.text }}
+                    />
+                  </div>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      )}
     </div>
-  );
+  )
 }

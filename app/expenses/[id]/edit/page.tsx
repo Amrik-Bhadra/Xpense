@@ -17,68 +17,74 @@ export default async function EditExpenses({
   if (!expense) notFound();
 
   return (
-    <main className="max-w-md mx-auto p-8">
-      <h1 className="text-xl font-bold mb-6">Edit Expense</h1>
+    <div className="p-8 max-w-md mx-auto">
+      <p className="text-sm text-muted">Edit record</p>
+      <h1 className="text-2xl font-semibold tracking-tight mb-6">Edit expense</h1>
 
-      <form action={updateExpense} className="space-y-4">
-        <input type="hidden" name="id" value={expense.id} />
+      <div className="rounded-2xl bg-surface border border-border p-6">
+        <form action={updateExpense} className="space-y-5">
+          <input type="hidden" name="id" value={expense.id} />
 
-        <div>
-          <label className="block text-sm font-medium mb-1">Title</label>
-          <input
-            type="text"
-            name="title"
-            defaultValue={expense.title}
-            required
-            className="w-full border rounded-lg p-2"
-          />
-        </div>
+          <div>
+            <label className="block text-sm font-medium mb-1.5">Title</label>
+            <input
+              type="text"
+              name="title"
+              defaultValue={expense.title}
+              required
+              className="w-full border border-border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-(--brand)/20 focus:border-brand transition-colors"
+            />
+          </div>
 
-        <div>
-          <label className="block text-sm font-medium mb-1">Amount</label>
-          <input
-            type="number"
-            name="amount"
-            step="0.01"
-            defaultValue={expense.amount}
-            required
-            className="w-full border rounded-lg p-2"
-          />
-        </div>
+          <div>
+            <label className="block text-sm font-medium mb-1.5">Amount</label>
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted">₹</span>
+              <input
+                type="number"
+                name="amount"
+                step="0.01"
+                defaultValue={expense.amount}
+                required
+                className="font-tabular w-full border border-border rounded-lg pl-7 pr-3 py-2 text-sm outline-none focus:ring-2 focus:ring-(--brand)/20 focus:border-brand transition-colors"
+              />
+            </div>
+          </div>
 
-        <div>
-          <label className="block text-sm font-medium mb-1">Category</label>
-          <select
-            name="categoryId"
-            defaultValue={expense.categoryId}
-            required
-            className="w-full border rounded-lg p-2"
+          <div>
+            <label className="block text-sm font-medium mb-1.5">Category</label>
+            <select
+              name="categoryId"
+              defaultValue={expense.categoryId}
+              required
+              className="w-full border border-border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-(--brand)/20 focus:border-brand transition-colors bg-surface"
+            >
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.id}>{cat.name}</option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1.5">
+              Notes <span className="text-muted font-normal">(optional)</span>
+            </label>
+            <textarea
+              name="notes"
+              defaultValue={expense.notes ?? ""}
+              rows={3}
+              className="w-full border border-border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-(--brand)/20 focus:border-brand transition-colors resize-none"
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-brand hover:bg-(--brand-hover) transition-colors text-white rounded-lg py-2.5 text-sm font-medium"
           >
-            {categories.map((cat) => (
-              <option key={cat.id} value={cat.id}>
-                {cat.name}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium mb-1">
-            Notes (optional)
-          </label>
-          <textarea
-            name="notes"
-            defaultValue={expense.notes ?? ""}
-            className="w-full border rounded-lg p-2"
-          />
-        </div>
-        <button
-          type="submit"
-          className="bg-black text-white rounded-lg px-4 py-2 font-medium"
-        >
-          Save Changes
-        </button>
-      </form>
-    </main>
+            Save changes
+          </button>
+        </form>
+      </div>
+    </div>
   );
 }
