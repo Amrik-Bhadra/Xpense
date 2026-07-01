@@ -2,20 +2,26 @@
 
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
+import { expenseSchema } from "@/lib/validations"
 
-export async function createExpense(formData: FormData) {
-    const title = formData.get("title") as string
-    const amount = parseFloat(formData.get("amount") as string)
-    const categoryId = formData.get('categoryId') as string
-    const notes = formData.get('notes') as string
-    
+export type ActionState = {
+    errors?: Record<string, string[]>
+} | undefined
+
+export async function createExpense(prevState: ActionState, formData: FormData) {
+    const result = expenseSchema.safeParse({
+        title: formData.get("title") as string,
+        amount: parseFloat(formData.get("amount") as string),
+        categoryId: formData.get('categoryId') as string,
+        notes: formData.get('notes') as string,
+    })
+
+    if (!result.success) {
+        return { errors: result.error.flatten().fieldErrors }
+    }
+
     await prisma.expense.create({
-        data:{
-            title,
-            amount,
-            categoryId,
-            notes: notes || null
-        },
+        data: result.data,
     })
 
     redirect('/expenses')
