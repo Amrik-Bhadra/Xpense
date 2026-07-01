@@ -2,12 +2,17 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Receipt, Wallet } from "lucide-react";
+import { LayoutDashboard, Receipt, Wallet, LogOut } from "lucide-react";
 
 const links = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
   { href: "/expenses", label: "Expenses", icon: Receipt },
 ];
+
+const user = {
+  name: "Amrik Bhadra",
+  initials: "AB",
+};
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -44,8 +49,25 @@ export default function Sidebar() {
         })}
       </nav>
 
-      <div className="px-6 py-4 border-t border-(--sidebar-border) text-xs">
-        Local · PostgreSQL
+      <div className="px-4 py-4 border-t border-(--sidebar-border)">
+        <div className="flex items-center gap-3 px-2">
+          <div className="w-8 h-8 rounded-full bg-brand flex items-center justify-center shrink-0">
+            <span className="text-xs font-semibold text-white">{user.initials}</span>
+          </div>
+
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium text-(--sidebar-text-active) truncate">
+              {user.name}
+            </p>
+          </div>
+
+          <button
+            className="p-1.5 rounded-lg hover:bg-white/5 text-(--sidebar-text) hover:text-(--sidebar-text-active) transition-colors shrink-0 cursor-pointer"
+            title="Log out"
+          >
+            <LogOut size={15} />
+          </button>
+        </div>
       </div>
     </aside>
   );
