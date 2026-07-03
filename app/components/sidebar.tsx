@@ -6,7 +6,7 @@ import { LayoutDashboard, Receipt, Wallet, LogOut } from "lucide-react";
 
 const links = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/expenses", label: "Expenses", icon: Receipt },
+  { href: "/transactions", label: "Expenses", icon: Receipt },
 ];
 
 const user = {
