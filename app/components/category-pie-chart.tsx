@@ -10,11 +10,8 @@ import {
   Legend,
 } from "recharts";
 import { categoryColor } from "@/lib/category-colors";
+import { MONTHS } from "@/lib/data";
 
-const MONTHS = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December",
-];
 
 type Slice = { name: string; value: number };
 

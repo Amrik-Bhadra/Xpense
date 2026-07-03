@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { categoryColor } from "@/lib/category-colors";
+import { categoryIcon } from "@/lib/category-icons";
 import DailyBarChart from "@/app/components/daily-bar-chart";
 import CategoryPieChart from "@/app/components/category-pie-chart";
 
@@ -120,6 +121,7 @@ export default async function DashboardPage() {
               {incomeTotals.map((t) => {
                 const amount = t._sum.amount ?? 0;
                 const color = categoryColor(categoryMap[t.categoryId] ?? "");
+                const Icon = categoryIcon(categoryMap[t.categoryId] ?? "");
                 const pct = (amount / maxIncome) * 100;
 
                 return (
@@ -127,10 +129,12 @@ export default async function DashboardPage() {
                     key={t.categoryId}
                     className="p-4 flex items-center gap-4"
                   >
-                    <span
-                      className="w-2 h-2 rounded-full shrink-0"
-                      style={{ backgroundColor: color.text }}
-                    />
+                    <div
+                      className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
+                      style={{ backgroundColor: color.bg }}
+                    >
+                      <Icon size={16} style={{ color: color.text }} />
+                    </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between mb-1.5">
                         <span className="text-sm font-medium">
@@ -163,6 +167,7 @@ export default async function DashboardPage() {
               {expenseTotals.map((t) => {
                 const amount = t._sum.amount ?? 0;
                 const color = categoryColor(categoryMap[t.categoryId] ?? "");
+                const Icon = categoryIcon(categoryMap[t.categoryId] ?? "");
                 const pct = (amount / maxExpense) * 100;
 
                 return (
@@ -170,10 +175,12 @@ export default async function DashboardPage() {
                     key={t.categoryId}
                     className="p-4 flex items-center gap-4"
                   >
-                    <span
-                      className="w-2 h-2 rounded-full shrink-0"
-                      style={{ backgroundColor: color.text }}
-                    />
+                    <div
+                      className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
+                      style={{ backgroundColor: color.bg }}
+                    >
+                      <Icon size={16} style={{ color: color.text }} />
+                    </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between mb-1.5">
                         <span className="text-sm font-medium">
