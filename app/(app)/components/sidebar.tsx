@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { LayoutDashboard, Receipt, Wallet, LogOut } from "lucide-react";
 
 const links = [
@@ -9,13 +9,26 @@ const links = [
   { href: "/transactions", label: "Expenses", icon: Receipt },
 ];
 
-const user = {
-  name: "Amrik Bhadra",
-  initials: "AB",
+type Props = {
+  user: { name: string; email: string };
 };
 
-export default function Sidebar() {
+export default function Sidebar({ user }: Props) {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const initials = user.name
+    .split(" ")
+    .map((p) => p[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+
+  async function handleLogout() {
+    await fetch("/api/auth/logout", { method: "POST" });
+    router.push("/login");
+    router.refresh();
+  }
 
   return (
     <aside className="w-60 shrink-0 h-screen bg-(--sidebar-bg) text-(--sidebar-text) flex flex-col border-r border-(--sidebar-border)">
@@ -53,7 +66,7 @@ export default function Sidebar() {
         <div className="flex items-center gap-3 px-2">
           <div className="w-8 h-8 rounded-full bg-brand flex items-center justify-center shrink-0">
             <span className="text-xs font-semibold text-white">
-              {user.initials}
+              {initials}
             </span>
           </div>
 
@@ -64,6 +77,7 @@ export default function Sidebar() {
           </div>
 
           <button
+            onClick={handleLogout}
             className="p-1.5 rounded-lg hover:bg-white/5 text-(--sidebar-text) hover:text-(--sidebar-text-active) transition-colors shrink-0 cursor-pointer"
             title="Log out"
           >

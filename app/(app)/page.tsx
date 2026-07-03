@@ -8,8 +8,8 @@ import {
 import { prisma } from "@/lib/prisma";
 import { categoryColor } from "@/lib/category-colors";
 import { categoryIcon } from "@/lib/category-icons";
-import DailyBarChart from "@/app/components/daily-bar-chart";
-import CategoryPieChart from "@/app/components/category-pie-chart";
+import DailyBarChart from "@/app/(app)/components/daily-bar-chart";
+import CategoryPieChart from "@/app/(app)/components/category-pie-chart";
 
 export default async function DashboardPage() {
   const [incomeAgg, expenseAgg, totals, categories] = await Promise.all([
