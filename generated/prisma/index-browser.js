@@ -120,6 +120,27 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
+exports.Prisma.UserScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  email: 'email',
+  password: 'password',
+  emailVerified: 'emailVerified',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.OtpScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  codeHash: 'codeHash',
+  purpose: 'purpose',
+  expiresAt: 'expiresAt',
+  consumedAt: 'consumedAt',
+  attempts: 'attempts',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.CategoryScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -133,6 +154,7 @@ exports.Prisma.TransactionScalarFieldEnum = {
   type: 'type',
   notes: 'notes',
   categoryId: 'categoryId',
+  userId: 'userId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -151,12 +173,19 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
+exports.OtpPurpose = exports.$Enums.OtpPurpose = {
+  REGISTER: 'REGISTER',
+  RESET_PASSWORD: 'RESET_PASSWORD'
+};
+
 exports.TransactionType = exports.$Enums.TransactionType = {
   INCOME: 'INCOME',
   EXPENSE: 'EXPENSE'
 };
 
 exports.Prisma.ModelName = {
+  User: 'User',
+  Otp: 'Otp',
   Category: 'Category',
   Transaction: 'Transaction'
 };
