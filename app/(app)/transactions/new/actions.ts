@@ -3,12 +3,16 @@
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
 import { transactionSchema } from "@/lib/validations"
+import { getCurrentUser } from "@/lib/auth/session"
 
 export type ActionState = {
     errors?: Record<string, string[]>
 } | undefined
 
 export async function createTransaction(prevState: ActionState, formData: FormData) {
+    const user = await getCurrentUser()
+    if (!user) redirect("/login")
+
     const result = transactionSchema.safeParse({
         title: formData.get("title") as string,
         amount: parseFloat(formData.get("amount") as string),
@@ -21,7 +25,12 @@ export async function createTransaction(prevState: ActionState, formData: FormDa
         return { errors: result.error.flatten().fieldErrors }
     }
 
-    await prisma.transaction.create({ data: result.data })
+    await prisma.transaction.create({
+        data: {
+            ...result.data,
+            userId: user.id,
+        },
+    })
 
     redirect('/transactions')
 }
