@@ -44,7 +44,7 @@ export default async function TransactionsPage({
     text.length <= max ? text : text.slice(0, max) + "...";
 
   return (
-    <div className="p-8 max-w-5xl mx-auto">
+    <div className="px-10 py-8">
       <div className="flex items-center justify-between mb-6">
         <div>
           <p className="text-sm text-muted">All records</p>
