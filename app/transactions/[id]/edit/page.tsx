@@ -10,7 +10,7 @@ export default async function EditExpenses({
   const { id } = await params;
 
   const [expense, categories] = await Promise.all([
-    prisma.expense.findUnique({ where: { id } }),
+    prisma.transaction.findUnique({ where: { id } }),
     prisma.category.findMany({ orderBy: { name: "asc" } }),
   ]);
 
@@ -79,7 +79,7 @@ export default async function EditExpenses({
 
           <button
             type="submit"
-            className="w-full bg-brand hover:bg-(--brand-hover) transition-colors text-white rounded-lg py-2.5 text-sm font-medium"
+            className="w-full bg-brand hover:bg-brand-hover transition-colors text-white rounded-lg py-2.5 text-sm font-medium"
           >
             Save changes
           </button>
