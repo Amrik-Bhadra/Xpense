@@ -11,21 +11,7 @@ import {
   ResponsiveContainer,
   CartesianGrid,
 } from "recharts";
-
-const MONTHS = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
+import { MONTHS } from "@/lib/data";
 
 type DailyPoint = { day: number; income: number; expense: number };
 
@@ -34,15 +20,27 @@ export default function DailyBarChart() {
   const [month, setMonth] = useState(now.getMonth() + 1);
   const [year, setYear] = useState(now.getFullYear());
   const [data, setData] = useState<DailyPoint[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loadedKey, setLoadedKey] = useState<string | null>(null);
+
+  const requestKey = `${month}-${year}`;
+  const loading = loadedKey !== requestKey;
 
   useEffect(() => {
-    // setLoading(true)
+    let ignore = false;
+
     fetch(`/api/analytics/daily?month=${month}&year=${year}`)
       .then((res) => res.json())
-      .then(setData)
-      .finally(() => setLoading(false));
-  }, [month, year]);
+      .then((json) => {
+        if (!ignore) {
+          setData(json);
+          setLoadedKey(requestKey);
+        }
+      });
+
+    return () => {
+      ignore = true;
+    };
+  }, [month, year, requestKey]);
 
   const years = Array.from({ length: 5 }, (_, i) => now.getFullYear() - i);
 

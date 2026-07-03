@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -18,7 +18,7 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-60 shrink-0 bg-(--sidebar-bg) text-(--sidebar-text) flex flex-col border-r border-(--sidebar-border)">
+    <aside className="w-60 shrink-0 h-screen bg-(--sidebar-bg) text-(--sidebar-text) flex flex-col border-r border-(--sidebar-border)">
       <div className="flex items-center gap-2 px-6 h-16 border-b border-(--sidebar-border)">
         <div className="w-7 h-7 rounded-md bg-brand flex items-center justify-center">
           <Wallet size={16} className="text-white" />
@@ -52,7 +52,9 @@ export default function Sidebar() {
       <div className="px-4 py-4 border-t border-(--sidebar-border)">
         <div className="flex items-center gap-3 px-2">
           <div className="w-8 h-8 rounded-full bg-brand flex items-center justify-center shrink-0">
-            <span className="text-xs font-semibold text-white">{user.initials}</span>
+            <span className="text-xs font-semibold text-white">
+              {user.initials}
+            </span>
           </div>
 
           <div className="flex-1 min-w-0">
