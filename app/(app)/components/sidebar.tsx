@@ -1,8 +1,10 @@
 "use client";
 
+import { useState, useTransition } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { LayoutDashboard, Receipt, Wallet, LogOut } from "lucide-react";
+import ConfirmModal from "@/app/components/confirm-modal";
 
 const links = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -16,6 +18,8 @@ type Props = {
 export default function Sidebar({ user }: Props) {
   const pathname = usePathname();
   const router = useRouter();
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
   const initials = user.name
     .split(" ")
@@ -24,10 +28,12 @@ export default function Sidebar({ user }: Props) {
     .slice(0, 2)
     .toUpperCase();
 
-  async function handleLogout() {
-    await fetch("/api/auth/logout", { method: "POST" });
-    router.push("/login");
-    router.refresh();
+  function handleLogout() {
+    startTransition(async () => {
+      await fetch("/api/auth/logout", { method: "POST" });
+      router.push("/login");
+      router.refresh();
+    });
   }
 
   return (
@@ -77,7 +83,7 @@ export default function Sidebar({ user }: Props) {
           </div>
 
           <button
-            onClick={handleLogout}
+            onClick={() => setShowLogoutConfirm(true)}
             className="p-1.5 rounded-lg hover:bg-white/5 text-(--sidebar-text) hover:text-(--sidebar-text-active) transition-colors shrink-0 cursor-pointer"
             title="Log out"
           >
@@ -85,6 +91,18 @@ export default function Sidebar({ user }: Props) {
           </button>
         </div>
       </div>
+
+      <ConfirmModal
+        open={showLogoutConfirm}
+        onClose={() => setShowLogoutConfirm(false)}
+        onConfirm={handleLogout}
+        isPending={isPending}
+        variant="brand"
+        icon={LogOut}
+        title="Log out?"
+        description="You'll need to log in again to access your dashboard."
+        confirmLabel="Log out"
+      />
     </aside>
   );
 }

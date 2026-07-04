@@ -2,7 +2,6 @@ import Link from "next/link";
 import {
   Plus,
   Pencil,
-  Trash2,
   Receipt,
   Search,
   Info,
@@ -13,10 +12,10 @@ import {
   ArrowDownCircle,
 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
-import { deleteTransaction } from "./[id]/edit/actions";
 import { categoryColor } from "@/lib/category-colors";
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/session";
+import DeleteTransactionModal from "./components/delete-transaction-modal";
 
 const PAGE_SIZE = 10;
 
@@ -218,15 +217,10 @@ export default async function TransactionsPage({
                           >
                             <Pencil size={14} />
                           </Link>
-                          <form action={deleteTransaction}>
-                            <input type="hidden" name="id" value={txn.id} />
-                            <button
-                              type="submit"
-                              className="p-1.5 rounded-lg hover:bg-negative-soft text-muted hover:text-negative"
-                            >
-                              <Trash2 size={14} />
-                            </button>
-                          </form>
+                          <DeleteTransactionModal
+                            transactionId={txn.id}
+                            transactionTitle={txn.title}
+                          />
                         </div>
                       </td>
                     </tr>
