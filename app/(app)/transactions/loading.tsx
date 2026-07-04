@@ -1,23 +1,24 @@
 export default function Loading() {
   return (
     <div className="px-10 py-8">
+      {/* header skeleton — darker shade */}
       <div className="flex items-center justify-between mb-6">
         <div className="space-y-2">
-          <div className="h-3 w-16 rounded bg-surface-hover animate-pulse" />
-          <div className="h-7 w-40 rounded bg-surface-hover animate-pulse" />
+          <div className="h-3 w-16 rounded bg-border animate-pulse" />
+          <div className="h-7 w-40 rounded bg-border animate-pulse" />
         </div>
-        <div className="h-10 w-36 rounded-lg bg-surface-hover animate-pulse" />
+        <div className="h-10 w-36 rounded-lg bg-border animate-pulse" />
       </div>
 
-      {/* Toolbar skeleton */}
+      {/* Toolbar skeleton — darker shade */}
       <div className="flex flex-wrap items-center gap-3 mb-5">
-        <div className="h-9 flex-1 min-w-55 rounded-lg bg-surface-hover animate-pulse" />
-        <div className="h-9 w-32 rounded-lg bg-surface-hover animate-pulse" />
-        <div className="h-9 w-40 rounded-lg bg-surface-hover animate-pulse" />
-        <div className="h-9 w-40 rounded-lg bg-surface-hover animate-pulse" />
+        <div className="h-9 flex-1 min-w-55 rounded-lg bg-border animate-pulse" />
+        <div className="h-9 w-32 rounded-lg bg-border animate-pulse" />
+        <div className="h-9 w-40 rounded-lg bg-border animate-pulse" />
+        <div className="h-9 w-40 rounded-lg bg-border animate-pulse" />
       </div>
 
-      {/* Table skeleton */}
+      {/* Table skeleton — unchanged */}
       <div className="rounded-2xl bg-surface border border-border overflow-hidden">
         <table className="w-full text-sm">
           <thead>
@@ -68,7 +69,7 @@ export default function Loading() {
         </table>
       </div>
 
-      {/* Pagination skeleton */}
+      {/* Pagination skeleton — unchanged */}
       <div className="flex items-center justify-between mt-4">
         <div className="h-4 w-40 rounded bg-surface-hover animate-pulse" />
         <div className="flex items-center gap-1">

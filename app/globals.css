@@ -85,3 +85,19 @@ body {
 html {
   scroll-behavior: smooth;
 }
+
+@keyframes shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--surface-hover) 25%,
+    #e8e9ee 37%,
+    var(--surface-hover) 63%
+  );
+  background-size: 800px 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
