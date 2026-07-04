@@ -40,7 +40,7 @@ export default function ResetPasswordPage() {
         return;
       }
 
-      router.push(data.redirect ?? "/");
+      router.push(data.redirect ?? "/login");
     } catch {
       setError("Something went wrong. Please try again.");
     } finally {

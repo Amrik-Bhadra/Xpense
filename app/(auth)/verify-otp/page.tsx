@@ -60,7 +60,7 @@ export default function VerifyOtpPage() {
         return;
       }
 
-      router.push(data.redirect ?? "/");
+      router.push(data.redirect ?? "/dashboard");
       router.refresh();
     } catch {
       setError("Something went wrong. Please try again.");

@@ -47,7 +47,7 @@ export async function POST(req: Request) {
     await setAccessCookie(accessToken);
     await setRefreshCookie(refreshToken);
 
-    return NextResponse.json({ message: "Logged in.", redirect: "/" });
+    return NextResponse.json({ message: "Logged in.", redirect: "/dashboard" });
   } catch (err) {
     console.error(err);
     return NextResponse.json({ error: "Something went wrong. Please try again." }, { status: 500 });

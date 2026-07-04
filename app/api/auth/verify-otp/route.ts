@@ -56,7 +56,7 @@ export async function POST(req: Request) {
       await setAccessCookie(accessToken);
       await setRefreshCookie(refreshToken);
 
-      return NextResponse.json({ message: "Email verified.", redirect: "/" });
+      return NextResponse.json({ message: "Email verified.", redirect: "/dashboard" });
     }
 
     const resetToken = await signFlowToken({ email: flow.email, purpose: "RESET_PASSWORD" }, "10m");

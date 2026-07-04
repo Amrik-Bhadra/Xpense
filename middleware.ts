@@ -4,14 +4,18 @@ import { jwtVerify } from "jose";
 const encoder = new TextEncoder();
 const ACCESS_SECRET = encoder.encode(process.env.JWT_ACCESS_SECRET!);
 
-const PUBLIC_PATHS = ["/login", "/register", "/verify-otp", "/forgot-password", "/reset-password"];
+const PUBLIC_PREFIXES = ["/login", "/register", "/verify-otp", "/forgot-password", "/reset-password"];
+const PUBLIC_EXACT = ["/"]; // landing page — must be an exact match, not a prefix
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   if (pathname.startsWith("/api/auth")) return NextResponse.next();
 
-  const isPublic = PUBLIC_PATHS.some((p) => pathname.startsWith(p));
+  const isPublic =
+    PUBLIC_EXACT.includes(pathname) ||
+    PUBLIC_PREFIXES.some((p) => pathname.startsWith(p));
+
   const token = req.cookies.get("access_token")?.value;
 
   let isAuthed = false;
@@ -33,7 +37,7 @@ export async function middleware(req: NextRequest) {
 
   if (isAuthed && isPublic) {
     const url = req.nextUrl.clone();
-    url.pathname = "/";
+    url.pathname = "/dashboard";
     return NextResponse.redirect(url);
   }
 

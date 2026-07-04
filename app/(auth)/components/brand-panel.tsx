@@ -1,4 +1,5 @@
 import { Wallet, ShieldCheck, TrendingUp, Zap } from "lucide-react";
+import Link from 'next/link'
 
 const features = [
   { icon: ShieldCheck, text: "Bank-grade encryption on every transaction" },
@@ -23,12 +24,12 @@ export default function BrandPanel() {
         />
       </div>
 
-      <div className="relative z-10 flex items-center gap-2">
+      <Link href="/" className="relative z-10 flex items-center gap-2">
         <div className="w-8 h-8 rounded-lg bg-brand flex items-center justify-center">
           <Wallet size={17} className="text-white" />
         </div>
         <span className="font-semibold tracking-tight text-lg">Xpense</span>
-      </div>
+      </Link>
 
       <div className="relative z-10">
         <h1 className="text-3xl xl:text-4xl font-semibold tracking-tight leading-tight mb-4">

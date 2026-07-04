@@ -35,7 +35,7 @@ function LoginForm() {
         return;
       }
 
-      router.push(data.redirect ?? searchParams.get("next") ?? "/");
+      router.push(data.redirect ?? searchParams.get("next") ?? "/dashboard");
       router.refresh();
     } catch {
       setError("Something went wrong. Please try again.");
