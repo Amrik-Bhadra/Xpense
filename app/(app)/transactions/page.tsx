@@ -15,6 +15,8 @@ import {
 import { prisma } from "@/lib/prisma";
 import { deleteTransaction } from "./[id]/edit/actions";
 import { categoryColor } from "@/lib/category-colors";
+import { redirect } from "next/navigation";
+import { getCurrentUser } from "@/lib/auth/session";
 
 const PAGE_SIZE = 10;
 
@@ -23,17 +25,21 @@ export default async function TransactionsPage({
 }: {
   searchParams: Promise<{ page?: string }>;
 }) {
+  const user = await getCurrentUser();
+  if (!user) redirect("/login");
+
   const { page: pageParam } = await searchParams;
   const page = Math.max(1, parseInt(pageParam ?? "1", 10) || 1);
 
   const [transactions, totalCount, categories] = await Promise.all([
     prisma.transaction.findMany({
+      where: { userId: user.id },
       include: { category: true },
       orderBy: { createdAt: "desc" },
       skip: (page - 1) * PAGE_SIZE,
       take: PAGE_SIZE,
     }),
-    prisma.transaction.count(),
+    prisma.transaction.count({ where: { userId: user.id } }),
     prisma.category.findMany({ orderBy: { name: "asc" } }),
   ]);
 

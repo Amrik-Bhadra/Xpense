@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import {
   ArrowUpRight,
   ArrowUpCircle,
@@ -10,19 +11,24 @@ import { categoryColor } from "@/lib/category-colors";
 import { categoryIcon } from "@/lib/category-icons";
 import DailyBarChart from "@/app/(app)/components/daily-bar-chart";
 import CategoryPieChart from "@/app/(app)/components/category-pie-chart";
+import { getCurrentUser } from "@/lib/auth/session";
 
 export default async function DashboardPage() {
+  const user = await getCurrentUser();
+  if (!user) redirect("/login");
+
   const [incomeAgg, expenseAgg, totals, categories] = await Promise.all([
     prisma.transaction.aggregate({
-      where: { type: "INCOME" },
+      where: { type: "INCOME", userId: user.id },
       _sum: { amount: true },
     }),
     prisma.transaction.aggregate({
-      where: { type: "EXPENSE" },
+      where: { type: "EXPENSE", userId: user.id },
       _sum: { amount: true },
     }),
     prisma.transaction.groupBy({
       by: ["categoryId", "type"],
+      where: { userId: user.id },
       _sum: { amount: true },
       orderBy: { _sum: { amount: "desc" } },
     }),

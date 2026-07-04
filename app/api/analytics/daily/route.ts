@@ -1,7 +1,13 @@
 import { prisma } from '@/lib/prisma'
+import { getCurrentUser } from '@/lib/auth/session'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest) {
+  const user = await getCurrentUser()
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
   const { searchParams } = new URL(request.url)
   const month = parseInt(searchParams.get('month') ?? '', 10)
   const year = parseInt(searchParams.get('year') ?? '', 10)
@@ -10,7 +16,7 @@ export async function GET(request: NextRequest) {
   const endDate = new Date(year, month, 1) // first day of NEXT month — exclusive upper bound
 
   const transactions = await prisma.transaction.findMany({
-    where: { createdAt: { gte: startDate, lt: endDate } },
+    where: { userId: user.id, createdAt: { gte: startDate, lt: endDate } },
     select: { amount: true, type: true, createdAt: true },
   })
 

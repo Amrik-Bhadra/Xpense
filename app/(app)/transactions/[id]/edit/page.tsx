@@ -1,12 +1,16 @@
 import { prisma } from "@/lib/prisma";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { updateExpense } from "./actions";
+import { getCurrentUser } from "@/lib/auth/session";
 
 export default async function EditExpenses({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const user = await getCurrentUser();
+  if (!user) redirect("/login");
+
   const { id } = await params;
 
   const [expense, categories] = await Promise.all([
@@ -14,12 +18,14 @@ export default async function EditExpenses({
     prisma.category.findMany({ orderBy: { name: "asc" } }),
   ]);
 
-  if (!expense) notFound();
+  if (!expense || expense.userId !== user.id) notFound();
 
   return (
     <div className="p-8 max-w-md mx-auto">
       <p className="text-sm text-muted">Edit record</p>
-      <h1 className="text-2xl font-semibold tracking-tight mb-6">Edit expense</h1>
+      <h1 className="text-2xl font-semibold tracking-tight mb-6">
+        Edit expense
+      </h1>
 
       <div className="rounded-2xl bg-surface border border-border p-6">
         <form action={updateExpense} className="space-y-5">
@@ -39,7 +45,9 @@ export default async function EditExpenses({
           <div>
             <label className="block text-sm font-medium mb-1.5">Amount</label>
             <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted">₹</span>
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted">
+                ₹
+              </span>
               <input
                 type="number"
                 name="amount"
@@ -60,7 +68,9 @@ export default async function EditExpenses({
               className="w-full border border-border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-(--brand)/20 focus:border-brand transition-colors bg-surface"
             >
               {categories.map((cat) => (
-                <option key={cat.id} value={cat.id}>{cat.name}</option>
+                <option key={cat.id} value={cat.id}>
+                  {cat.name}
+                </option>
               ))}
             </select>
           </div>
