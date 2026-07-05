@@ -1,8 +1,8 @@
 "use client";
 
-import { Calendar, LoaderCircle, Search } from "lucide-react";
-import { useEffect, useState, useTransition } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { Calendar, Search } from "lucide-react";
+import { useCallback, useEffect, useRef, useState, useTransition } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 type Category = { id: string; name: string };
 type PaymentMethod = { id: string; name: string };
@@ -36,32 +36,17 @@ export default function TransactionToolbar({
   const [categoryId, setCategoryId] = useState(initialCategoryId);
   const [paymentMethodId, setPaymentMethodId] = useState(initialPaymentMethodId);
   const [date, setDate] = useState(initialDate);
-  const [isLoading, setIsLoading] = useState(false);
-  const [, startTransition] = useTransition();
+  const [isPending, startTransition] = useTransition();
+  const searchParams = useSearchParams();
+  const mountedRef = useRef(false);
 
   useEffect(() => {
-    onLoadingChange?.(isLoading);
-  }, [isLoading, onLoadingChange]);
+    onLoadingChange?.(isPending);
+  }, [isPending, onLoadingChange]);
 
-  useEffect(() => {
-    setSearch(initialSearch);
-    setType(initialType);
-    setCategoryId(initialCategoryId);
-    setPaymentMethodId(initialPaymentMethodId);
-    setDate(initialDate);
-  }, [
-    initialSearch,
-    initialType,
-    initialCategoryId,
-    initialPaymentMethodId,
-    initialDate,
-  ]);
-
-  const updateUrl = (nextValues: Record<string, string | undefined>) => {
-    setIsLoading(true);
-
-    startTransition(() => {
-      const params = new URLSearchParams(window.location.search);
+  const updateUrl = useCallback(
+    (nextValues: Record<string, string | undefined>) => {
+      const params = new URLSearchParams(searchParams?.toString() ?? window.location.search);
 
       Object.entries(nextValues).forEach(([key, value]) => {
         if (value) {
@@ -71,45 +56,38 @@ export default function TransactionToolbar({
         }
       });
 
-      params.set("page", "1");
+      if (nextValues.q !== undefined || Object.keys(nextValues).some((key) => key !== "q")) {
+        params.set("page", "1");
+      }
 
       const query = params.toString();
-      router.replace(`${pathname}${query ? `?${query}` : ""}`, { scroll: false });
-    });
-  };
+      const nextUrl = `${pathname}${query ? `?${query}` : ""}`;
+      const currentUrl = `${pathname}${window.location.search}`;
+
+      if (nextUrl === currentUrl) {
+        return;
+      }
+
+      startTransition(() => {
+        router.replace(nextUrl, { scroll: false });
+      });
+    },
+    [pathname, router, searchParams]
+  );
 
   useEffect(() => {
+    if (!mountedRef.current) {
+      mountedRef.current = true;
+      return;
+    }
+
     const timer = window.setTimeout(() => {
       updateUrl({ q: search.trim() || undefined });
     }, 350);
 
     return () => window.clearTimeout(timer);
-  }, [search]);
+  }, [search, updateUrl]);
 
-  useEffect(() => {
-    if (
-      isLoading &&
-      search === initialSearch &&
-      type === initialType &&
-      categoryId === initialCategoryId &&
-      paymentMethodId === initialPaymentMethodId &&
-      date === initialDate
-    ) {
-      setIsLoading(false);
-    }
-  }, [
-    isLoading,
-    search,
-    type,
-    categoryId,
-    paymentMethodId,
-    date,
-    initialSearch,
-    initialType,
-    initialCategoryId,
-    initialPaymentMethodId,
-    initialDate,
-  ]);
 
   return (
     <div className="flex flex-wrap items-center gap-3 mb-5">
@@ -123,7 +101,7 @@ export default function TransactionToolbar({
           value={search}
           onChange={(event) => setSearch(event.target.value)}
           placeholder="Search transactions..."
-          disabled={isLoading}
+          disabled={isPending}
           className="w-full border border-border rounded-lg pl-9 pr-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-colors bg-surface disabled:opacity-70"
         />
       </div>
@@ -135,7 +113,7 @@ export default function TransactionToolbar({
           setType(nextType);
           updateUrl({ type: nextType || undefined });
         }}
-        disabled={isLoading}
+        disabled={isPending}
         className="w-full sm:w-auto border border-border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-colors bg-surface disabled:opacity-70"
       >
         <option value="">All types</option>
@@ -150,7 +128,7 @@ export default function TransactionToolbar({
           setCategoryId(nextCategoryId);
           updateUrl({ categoryId: nextCategoryId || undefined });
         }}
-        disabled={isLoading}
+        disabled={isPending}
         className="w-full sm:w-auto border border-border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-colors bg-surface disabled:opacity-70"
       >
         <option value="">All categories</option>
@@ -168,7 +146,7 @@ export default function TransactionToolbar({
           setPaymentMethodId(nextPaymentMethodId);
           updateUrl({ paymentMethodId: nextPaymentMethodId || undefined });
         }}
-        disabled={isLoading}
+        disabled={isPending}
         className="w-full sm:w-auto border border-border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-colors bg-surface disabled:opacity-70"
       >
         <option value="">All payment methods</option>
@@ -192,17 +170,10 @@ export default function TransactionToolbar({
             setDate(nextDate);
             updateUrl({ date: nextDate || undefined });
           }}
-          disabled={isLoading}
+          disabled={isPending}
           className="w-full sm:w-auto border border-border rounded-lg pl-9 pr-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-colors bg-surface disabled:opacity-70"
         />
       </div>
-
-      {isLoading && (
-        <div className="flex w-full items-center justify-end gap-2 text-sm text-brand">
-          <LoaderCircle size={15} className="animate-spin" />
-          <span>Loading transactions…</span>
-        </div>
-      )}
     </div>
   );
 }

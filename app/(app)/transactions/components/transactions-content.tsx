@@ -13,7 +13,7 @@ import {
   Wallet,
   LoaderCircle,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import DeleteTransactionModal from "./delete-transaction-modal";
 import TransactionToolbar from "./transaction-toolbar";
 import { categoryColor } from "@/lib/helpers/category-colors";
@@ -66,12 +66,7 @@ export default function TransactionsContent({
   initialDate,
 }: TransactionsContentProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const [transactions, setTransactions] = useState(initialTransactions);
-
-  useEffect(() => {
-    setTransactions(initialTransactions);
-    setIsLoading(false);
-  }, [initialTransactions]);
+  const transactions = initialTransactions;
 
   const truncate = (text: string, max: number) =>
     text.length <= max ? text : text.slice(0, max) + "...";
@@ -79,6 +74,7 @@ export default function TransactionsContent({
   return (
     <>
       <TransactionToolbar
+        key={`${initialSearch}-${initialType}-${initialCategoryId}-${initialPaymentMethodId}-${initialDate}`}
         initialSearch={initialSearch}
         initialType={initialType}
         initialCategoryId={initialCategoryId}

@@ -1,6 +1,8 @@
 "use client";
 
 import { AlertTriangle, X, Loader2, type LucideIcon } from "lucide-react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 
 type Variant = "danger" | "brand";
 
@@ -52,11 +54,17 @@ export default function ConfirmModal({
   variant = "danger",
   icon: Icon = AlertTriangle,
 }: Props) {
-  if (!open) return null;
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!open || !mounted) return null;
 
   const styles = variantStyles[variant];
 
-  return (
+  const modal = (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-fade-in-up"
       onClick={() => !isPending && onClose()}
@@ -108,4 +116,6 @@ export default function ConfirmModal({
       </div>
     </div>
   );
+
+  return createPortal(modal, document.body);
 }
