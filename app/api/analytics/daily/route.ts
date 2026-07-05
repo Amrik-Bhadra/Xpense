@@ -16,8 +16,8 @@ export async function GET(request: NextRequest) {
   const endDate = new Date(year, month, 1) // first day of NEXT month — exclusive upper bound
 
   const transactions = await prisma.transaction.findMany({
-    where: { userId: user.id, createdAt: { gte: startDate, lt: endDate } },
-    select: { amount: true, type: true, createdAt: true },
+    where: { userId: user.id, transactionDate: { gte: startDate, lt: endDate } },
+    select: { amount: true, type: true, transactionDate: true },
   })
 
   const daysInMonth = new Date(year, month, 0).getDate()
@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
   }))
 
   for (const txn of transactions) {
-    const day = txn.createdAt.getDate()
+    const day = txn.transactionDate.getDate()
     if (txn.type === 'INCOME') data[day - 1].income += txn.amount
     else data[day - 1].expense += txn.amount
   }

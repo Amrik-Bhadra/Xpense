@@ -1,14 +1,11 @@
-/*
-  Warnings:
+-- CreateSchema
+CREATE SCHEMA IF NOT EXISTS "public";
 
-  - Added the required column `userId` to the `Transaction` table without a default value. This is not possible if the table is not empty.
+-- CreateEnum
+CREATE TYPE "TransactionType" AS ENUM ('INCOME', 'EXPENSE');
 
-*/
 -- CreateEnum
 CREATE TYPE "OtpPurpose" AS ENUM ('REGISTER', 'RESET_PASSWORD');
-
--- AlterTable
-ALTER TABLE "Transaction" ADD COLUMN     "userId" TEXT NOT NULL;
 
 -- CreateTable
 CREATE TABLE "User" (
@@ -37,6 +34,31 @@ CREATE TABLE "Otp" (
     CONSTRAINT "Otp_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "Category" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Category_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Transaction" (
+    "id" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
+    "amount" DOUBLE PRECISION NOT NULL,
+    "type" "TransactionType" NOT NULL DEFAULT 'EXPENSE',
+    "notes" TEXT,
+    "transactionDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "categoryId" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Transaction_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
@@ -44,10 +66,19 @@ CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 CREATE INDEX "Otp_email_purpose_idx" ON "Otp"("email", "purpose");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Category_name_key" ON "Category"("name");
+
+-- CreateIndex
 CREATE INDEX "Transaction_userId_idx" ON "Transaction"("userId");
 
 -- CreateIndex
 CREATE INDEX "Transaction_userId_type_idx" ON "Transaction"("userId", "type");
+
+-- CreateIndex
+CREATE INDEX "Transaction_userId_transactionDate_idx" ON "Transaction"("userId", "transactionDate");
+
+-- AddForeignKey
+ALTER TABLE "Transaction" ADD CONSTRAINT "Transaction_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "Category"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Transaction" ADD CONSTRAINT "Transaction_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

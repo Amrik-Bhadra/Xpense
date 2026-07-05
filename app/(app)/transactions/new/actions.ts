@@ -2,7 +2,7 @@
 
 import { prisma } from "@/lib/prisma"
 import { redirect } from "next/navigation"
-import { transactionSchema } from "@/lib/validations"
+import { transactionSchema } from "@/lib/helpers/validations"
 import { getCurrentUser } from "@/lib/auth/session"
 
 export type ActionState = {
@@ -18,7 +18,9 @@ export async function createTransaction(prevState: ActionState, formData: FormDa
         amount: parseFloat(formData.get("amount") as string),
         type: formData.get('type'),
         categoryId: formData.get('categoryId') as string,
+        paymentMethodId: formData.get('paymentMethodId') as string,
         notes: formData.get('notes') as string,
+        transactionDate: formData.get('transactionDate'),
     })
 
     if (!result.success) {

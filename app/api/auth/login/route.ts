@@ -4,7 +4,7 @@ import { comparePassword } from "@/lib/auth/password";
 import { signAccessToken, signRefreshToken, signFlowToken } from "@/lib/auth/tokens";
 import { setAccessCookie, setRefreshCookie, setFlowCookie } from "@/lib/auth/cookies";
 import { generateOtp, hashOtp } from "@/lib/auth/otp";
-import { sendOtpEmail } from "@/lib/mailer";
+import { sendOtpEmail } from "@/lib/helpers/mailer";
 
 export async function POST(req: Request) {
   try {

@@ -147,13 +147,21 @@ exports.Prisma.CategoryScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.PaymentMethodScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.TransactionScalarFieldEnum = {
   id: 'id',
   title: 'title',
   amount: 'amount',
   type: 'type',
   notes: 'notes',
+  transactionDate: 'transactionDate',
   categoryId: 'categoryId',
+  paymentMethodId: 'paymentMethodId',
   userId: 'userId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -187,6 +195,7 @@ exports.Prisma.ModelName = {
   User: 'User',
   Otp: 'Otp',
   Category: 'Category',
+  PaymentMethod: 'PaymentMethod',
   Transaction: 'Transaction'
 };
 

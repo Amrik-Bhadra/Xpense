@@ -7,8 +7,8 @@ import {
   Scale,
 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
-import { categoryColor } from "@/lib/category-colors";
-import { categoryIcon } from "@/lib/category-icons";
+import { categoryColor } from "@/lib/helpers/category-colors";
+import { categoryIcon } from "@/lib/helpers/category-icons";
 import DailyBarChart from "@/app/(app)/components/daily-bar-chart";
 import CategoryPieChart from "@/app/(app)/components/category-pie-chart";
 import { getCurrentUser } from "@/lib/auth/session";
@@ -51,14 +51,14 @@ export default async function DashboardPage() {
   );
 
   return (
-    <div className="px-10 py-8">
+    <div className="px-4 py-6 sm:px-6 lg:px-10 lg:py-8">
       <header className="mb-8">
         <p className="text-sm text-muted">Overview</p>
         <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
       </header>
 
       {/* summary cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 mb-8">
         <div className="rounded-2xl bg-surface border border-border p-5">
           <div className="flex items-center justify-between mb-3">
             <p className="text-sm text-muted">Income</p>
@@ -117,7 +117,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* Breakdown cards */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         {incomeTotals.length > 0 && (
           <div>
             <p className="text-xs font-medium text-positive mb-2 px-1">

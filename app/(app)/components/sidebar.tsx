@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, Receipt, Wallet, LogOut } from "lucide-react";
+import { LayoutDashboard, Receipt, Wallet, LogOut, PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import ConfirmModal from "@/app/components/confirm-modal";
 
 const links = [
@@ -13,9 +13,12 @@ const links = [
 
 type Props = {
   user: { name: string; email: string };
+  isCollapsed?: boolean;
+  onToggleCollapse?: () => void;
+  onMobileClose?: () => void;
 };
 
-export default function Sidebar({ user }: Props) {
+export default function Sidebar({ user, isCollapsed = false, onToggleCollapse, onMobileClose }: Props) {
   const pathname = usePathname();
   const router = useRouter();
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
@@ -37,12 +40,22 @@ export default function Sidebar({ user }: Props) {
   }
 
   return (
-    <aside className="w-60 shrink-0 h-screen bg-(--sidebar-bg) text-(--sidebar-text) flex flex-col border-r border-(--sidebar-border)">
-      <div className="flex items-center gap-2 px-6 h-16 border-b border-(--sidebar-border)">
-        <div className="w-7 h-7 rounded-md bg-brand flex items-center justify-center">
-          <Wallet size={16} className="text-white" />
+    <aside className={`shrink-0 h-screen bg-(--sidebar-bg) text-(--sidebar-text) flex flex-col border-r border-(--sidebar-border) transition-all duration-300 ${isCollapsed ? "w-20" : "w-60"}`}>
+      <div className={`flex items-center ${isCollapsed ? "justify-center px-3" : "justify-between px-6"} h-16 border-b border-(--sidebar-border)`}>
+        <div className="flex items-center gap-2">
+          <div className="w-7 h-7 rounded-md bg-brand flex items-center justify-center">
+            <Wallet size={16} className="text-white" />
+          </div>
+          {!isCollapsed && <span className="text-white font-semibold tracking-tight">Xpense</span>}
         </div>
-        <span className="text-white font-semibold tracking-tight">Xpense</span>
+        <button
+          type="button"
+          onClick={onToggleCollapse}
+          className="rounded-lg p-1.5 text-(--sidebar-text) hover:bg-white/5 hover:text-(--sidebar-text-active)"
+          aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+        >
+          {isCollapsed ? <PanelLeftOpen size={16} /> : <PanelLeftClose size={16} />}
+        </button>
       </div>
 
       <nav className="flex-1 px-3 py-4 space-y-1">
@@ -62,28 +75,33 @@ export default function Sidebar({ user }: Props) {
                 <span className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-0.75 rounded-full bg-brand" />
               )}
               <Icon size={17} />
-              {label}
+              {!isCollapsed && <span>{label}</span>}
             </Link>
           );
         })}
       </nav>
 
       <div className="px-4 py-4 border-t border-(--sidebar-border)">
-        <div className="flex items-center gap-3 px-2">
+        <div className={`flex items-center ${isCollapsed ? "justify-center" : "gap-3 px-2"}`}>
           <div className="w-8 h-8 rounded-full bg-brand flex items-center justify-center shrink-0">
             <span className="text-xs font-semibold text-white">
               {initials}
             </span>
           </div>
 
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-(--sidebar-text-active) truncate">
-              {user.name}
-            </p>
-          </div>
+          {!isCollapsed && (
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-(--sidebar-text-active) truncate">
+                {user.name}
+              </p>
+            </div>
+          )}
 
           <button
-            onClick={() => setShowLogoutConfirm(true)}
+            onClick={() => {
+              setShowLogoutConfirm(true);
+              onMobileClose?.();
+            }}
             className="p-1.5 rounded-lg hover:bg-white/5 text-(--sidebar-text) hover:text-(--sidebar-text-active) transition-colors shrink-0 cursor-pointer"
             title="Log out"
           >

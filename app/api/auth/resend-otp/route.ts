@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { generateOtp, hashOtp } from "@/lib/auth/otp";
 import { verifyFlowToken, signFlowToken } from "@/lib/auth/tokens";
 import { setFlowCookie } from "@/lib/auth/cookies";
-import { sendOtpEmail } from "@/lib/mailer";
+import { sendOtpEmail } from "@/lib/helpers/mailer";
 
 export async function POST() {
   try {

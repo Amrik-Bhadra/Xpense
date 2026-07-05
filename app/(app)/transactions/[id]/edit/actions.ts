@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/auth/session'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
-import { transactionSchema } from '@/lib/validations'
+import { transactionSchema } from '@/lib/helpers/validations'
 
 export async function updateTransaction(formData: FormData) {
   const user = await getCurrentUser()
@@ -17,7 +17,9 @@ export async function updateTransaction(formData: FormData) {
     amount: formData.get('amount'),
     type: formData.get('type'),
     categoryId: formData.get('categoryId'),
+    paymentMethodId: formData.get('paymentMethodId'),
     notes: formData.get('notes'),
+    transactionDate: formData.get('transactionDate'),
   })
 
   if (!result.success) {

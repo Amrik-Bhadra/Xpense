@@ -13,20 +13,21 @@ export default async function EditExpenses({
 
   const { id } = await params;
 
-  const [transaction, categories] = await Promise.all([
+  const [transaction, categories, paymentMethods] = await Promise.all([
     prisma.transaction.findFirst({ where: { id, userId: user.id } }),
     prisma.category.findMany({ orderBy: { name: "asc" } }),
+    prisma.paymentMethod.findMany({ orderBy: { name: "asc" } }),
   ]);
 
   if (!transaction) notFound();
 
   return (
-    <div className="p-8 max-w-md mx-auto">
+    <div className="px-4 py-6 sm:px-6 lg:px-8 max-w-5xl mx-auto">
       <p className="text-sm text-muted">Edit record</p>
       <h1 className="text-2xl font-semibold tracking-tight mb-6">Edit transaction</h1>
 
       <div className="rounded-2xl bg-surface border border-border p-6">
-        <EditTransactionForm transaction={transaction} categories={categories} />
+        <EditTransactionForm transaction={transaction} categories={categories} paymentMethods={paymentMethods} />
       </div>
     </div>
   );
