@@ -11,7 +11,7 @@ import {
   ResponsiveContainer,
   CartesianGrid,
 } from "recharts";
-import { MONTHS } from "@/lib/data";
+import { MONTHS } from "@/lib/helpers/data";
 
 type DailyPoint = { day: number; income: number; expense: number };
 

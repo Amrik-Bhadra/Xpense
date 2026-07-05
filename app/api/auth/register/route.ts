@@ -4,7 +4,7 @@ import { hashPassword } from "@/lib/auth/password";
 import { generateOtp, hashOtp } from "@/lib/auth/otp";
 import { signFlowToken } from "@/lib/auth/tokens";
 import { setFlowCookie } from "@/lib/auth/cookies";
-import { sendOtpEmail } from "@/lib/mailer";
+import { sendOtpEmail } from "@/lib/helpers/mailer";
 
 export async function POST(req: Request) {
   try {
