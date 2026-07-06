@@ -168,5 +168,3 @@ npx prisma studio
 - The app uses server components and server actions heavily, so most business logic lives on the server side.
 - Auth state is driven by cookies rather than client-side storage.
 - For local development, the email OTP flow is easiest to test when SMTP is configured; otherwise the code is printed to the console.
-
-If you want to contribute or extend the app, start by exploring the auth routes, transaction actions, and analytics endpoints, since those are the core pieces that power the product experience.
